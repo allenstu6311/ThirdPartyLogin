@@ -25,7 +25,7 @@
 
         function login() {
 
-            const url = "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=2002720786&redirect_uri=http://127.0.0.1:5500/index.html&state=123456789&scope=openid%20profile&nonce=helloWorld&prompt=consent&max_age=3600&ui_locales=zh-TW&bot_prompt=normal"
+            const url = "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=2002720786&redirect_uri=https://allenstu6311.github.io/ThirdPartyLogin/&state=123456789&scope=openid%20profile&nonce=helloWorld&prompt=consent&max_age=3600&ui_locales=zh-TW&bot_prompt=normal"
 
             window.location.href = url
 
@@ -54,7 +54,7 @@
                 axios.post("https://api.line.me/oauth2/v2.1/token", {
                     "grant_type": "authorization_code",
                     "code": code,
-                    "redirect_uri": "http://127.0.0.1:5500/index.html",
+                    "redirect_uri": "https://allenstu6311.github.io/ThirdPartyLogin/",
                     "client_id": "2002720786",
                     "client_secret": "8dcc3cc26bae4878015fe1f96a551c18"
                 },
@@ -95,7 +95,7 @@
 
     </script>
 
-    <!-- http://127.0.0.1:5500/index.html?code=3Sn898L35uSoVvKEO3Up&state=123456789 -->
+    <!-- https://allenstu6311.github.io/ThirdPartyLogin/?code=3Sn898L35uSoVvKEO3Up&state=123456789 -->
 
 </body>
 
