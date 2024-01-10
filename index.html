@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .line_login {
+        cursor: pointer;
+    }
+</style>
+
+<body>
+
+    <img class="line_login" src="./btn_login_base.png" alt="" onclick="login()">
+    <button onclick="validate()">驗證</button>
+    <img src="" alt="" id="pic">
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        let userInfo = {}
+        let img = document.getElementById("pic")
+
+        function login() {
+
+            const url = "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=2002720786&redirect_uri=http://127.0.0.1:5500/index.html&state=123456789&scope=openid%20profile&nonce=helloWorld&prompt=consent&max_age=3600&ui_locales=zh-TW&bot_prompt=normal"
+
+            window.location.href = url
+
+        }
+
+        function validate() {
+            userInfo = JSON.parse(localStorage.getItem("userInfo"))
+            axios.get("https://api.line.me/oauth2/v2.1/verify", {
+                params: {
+                    access_token: userInfo.access_token
+                }
+
+            })
+                .then((res) => {
+                    console.log('validate', res)
+                })
+        }
+
+        window.onload = function () {
+            let url = window.location.href
+            let paramUrl = new URL(url)
+            let code = paramUrl.searchParams.get("code")
+            userInfo = JSON.parse(localStorage.getItem("userInfo"))
+
+            if (!userInfo && code) {
+                axios.post("https://api.line.me/oauth2/v2.1/token", {
+                    "grant_type": "authorization_code",
+                    "code": code,
+                    "redirect_uri": "http://127.0.0.1:5500/index.html",
+                    "client_id": "2002720786",
+                    "client_secret": "8dcc3cc26bae4878015fe1f96a551c18"
+                },
+                    {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then((res) => {
+                        let param = res.data
+                        console.log(param.access_token)
+
+                        axios.get("https://api.line.me/v2/profile", {
+                            headers: {
+                                'Authorization': 'Bearer ' + param.access_token
+                            }
+                        })
+                            .then((rs) => {
+                                console.log("Authorization", rs)
+                                img.src = rs.data.pictureUrl
+                                userInfo = res.data
+                                userInfo.pic = rs.data.pictureUrl
+                                console.log('userInfo',userInfo)
+
+
+                                localStorage.setItem('userInfo', JSON.stringify(userInfo))
+                            })
+
+                       
+                       
+                    })
+            }else{
+                console.log('userInfo',userInfo.pic)
+                img.src = userInfo.pic
+            }
+        }
+
+
+    </script>
+
+    <!-- http://127.0.0.1:5500/index.html?code=3Sn898L35uSoVvKEO3Up&state=123456789 -->
+
+</body>
+
+</html>
